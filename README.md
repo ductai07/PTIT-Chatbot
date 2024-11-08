@@ -1,4 +1,4 @@
-# PTIT CHATBOT BY DUCTAI
+# PTIT CHATBOT
 ## Description:
 Famework : Langchain  
 API : FastAPI
