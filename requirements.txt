@@ -1,0 +1,10 @@
+torch
+transformers
+langchain
+langchain-core
+langchain-community
+langserve
+chromadb
+faiss-cpu 
+fastapi
+uvicorn
