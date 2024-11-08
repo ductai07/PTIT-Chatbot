@@ -1,7 +1,7 @@
 # PTIT CHATBOT
 ## Description:
 Famework : Langchain  
-API : FastAPI
+API : FastAPI  
 Model: *gemini-1.5-flash* của Google , *all-MiniLM-L6-v2* của HuggingFace  
 
 
