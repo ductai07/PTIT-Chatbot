@@ -22,11 +22,11 @@ PTIT CHATBOT :.
 1.Setup môi trường:  
 ```pip install -r requirements.txt``` 
 
-2.Sử dụng API Key(của bạn) Google với model *gemini 1.5 flash* và model Embedding *all-MiniLM-L6-v2* ở HuggingFace  
+2.Sử dụng API Google Key(của bạn) với model *gemini 1.5 flash* và model Embedding *all-MiniLM-L6-v2* ở HuggingFace  
 
 3.Chạy code ở local với đoạn code:   
--Đối với API :  
-```python -m uvicorn src.app:app --host "0.0.0.0" --port 5000```  
+-Đối với API :   
+```python -m uvicorn src.app:app --host "0.0.0.0" --port 5000 ```
 
 -Chạy để hiển thị giao diện:  
 ```python -m streamlit run frontend.py```
