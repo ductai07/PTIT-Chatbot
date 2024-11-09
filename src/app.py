@@ -1,6 +1,6 @@
 import os
 from pydantic import BaseModel, Field
-from fastapi import FastAPI
+from fastapi import FastAPI,  HTTPException
 from langserve import add_routes
 from src.model.llm_model import llm_model
 from src.rag_code.RAG_chains import read_vectors_db, create_qa_chain, creat_prompt
@@ -21,25 +21,43 @@ chatbot = create_qa_chain(prompt, llm, db)
 app = FastAPI(title="PTIT Chatbot",
               description="A simple chatbot for PTIT students built by DucTaiTran.")
 
+
 #  Pydantic models
 class InputData(BaseModel):
-    question: str = Field(..., title="Xin chào, tôi có thể giúp gì cho bạn?")
+    question: str 
 
-class OutputData(BaseModel):
-    answer: str = Field(..., title="Câu trả lời: ")
+class Output(BaseModel):
+    answer: str
+    
+def clean_response(response: str) -> str:
+    # Loại bỏ các thẻ không cần thiết
+    response = response.replace("assistant\n", "")
+    response = response.replace("", "")
+    response = response.strip()
+    # Loại bỏ các dòng trống
+    lines = response.split('\n')
+    cleaned_lines = [line.strip() for line in lines if line.strip()]
+    cleaned_response = ' '.join(cleaned_lines)
+    return cleaned_response
+
 #  Routes 
 @app.get("/check")
 async def check():
     return {"message": "Hello Chatbot PTIT is running!!!!"}
 
-@app.post("/chatbot", response_model=OutputData)
+@app.post("/answer/", response_model=Output)
 async def chatbot_api(input_data: InputData):
-    output = chatbot.invoke(input_data.question)
-    return {"answer": output}
-
-#  routes Langserve
-add_routes(app, chatbot, playground_type="default", path="/chatbot")
+    try:
+        output = chatbot.invoke(input_data.question)
+         
+        # Trích xuất chuỗi văn bản từ output
+        output_text = output["result"]
+        # clean an xơ 
+        cleaned_output = clean_response(output_text)
+        return {"answer": cleaned_output}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
  
-# run: python -m uvicorn src.app:app --host "0.0.0.0" --port 5000  
-# http://127.0.0.1:5000/docs
+# run: python -m uvicorn src.app:app --host "0.0.0.0" --port 6060  
+# http://127.0.0.1:6060/docs (máy local)
